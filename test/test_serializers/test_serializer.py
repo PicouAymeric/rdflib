@@ -23,8 +23,8 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib
 import rdflib.plugin
-from rdflib import RDF, XSD, Graph, Literal, Namespace, URIRef
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Dataset
+from rdflib import RDF, XSD, Graph, Literal, Namespace, URIRef, Dataset, ConjunctiveGraph
+from rdflib.dataset import DATASET_DEFAULT_GRAPH_ID
 from rdflib.serializer import Serializer
 from test.utils import GraphHelper, get_unique_plugins
 from test.utils.destination import DestinationType, DestParmType, DestRef

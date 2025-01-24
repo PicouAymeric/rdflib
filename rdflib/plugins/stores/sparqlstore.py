@@ -17,7 +17,8 @@ from typing import (
     overload,
 )
 
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph
+from rdflib.graph import Graph
+from rdflib.dataset import DATASET_DEFAULT_GRAPH_ID
 from rdflib.plugins.stores.regexmatching import NATIVE_REGEX
 from rdflib.store import Store
 from rdflib.term import (

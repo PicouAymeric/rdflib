@@ -5,8 +5,8 @@ import warnings
 
 import pytest
 
-from rdflib import BNode, Namespace, URIRef, plugin
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
+from rdflib import BNode, Namespace, URIRef, plugin, Graph, Dataset
+from rdflib.dataset import DATASET_DEFAULT_GRAPH_ID
 from rdflib.store import Store
 from test.data import CONTEXT1, LIKES, PIZZA, TAREK
 

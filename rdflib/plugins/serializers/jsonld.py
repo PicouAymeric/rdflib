@@ -40,10 +40,11 @@ from __future__ import annotations
 import warnings
 from typing import IO, TYPE_CHECKING, Any, Union, cast
 
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph
+from rdflib.graph import Graph
 from rdflib.namespace import RDF, XSD
 from rdflib.serializer import Serializer
 from rdflib.term import BNode, IdentifiedNode, Literal, URIRef
+from rdflib.dataset import DATASET_DEFAULT_GRAPH_ID
 
 from ..shared.jsonld.context import UNDEF, Context
 from ..shared.jsonld.keys import CONTEXT, GRAPH, ID, LANG, LIST, SET, VOCAB

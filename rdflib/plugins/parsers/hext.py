@@ -11,7 +11,7 @@ import warnings
 from io import TextIOWrapper
 from typing import TYPE_CHECKING, Any, BinaryIO, TextIO, Union
 
-from rdflib.graph import ConjunctiveGraph, Dataset, Graph
+from rdflib import ConjunctiveGraph, Dataset, Graph
 from rdflib.parser import InputSource, Parser
 from rdflib.term import BNode, Literal, URIRef
 

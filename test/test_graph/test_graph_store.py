@@ -18,7 +18,7 @@ from unittest.mock import patch
 import pytest
 
 import rdflib.namespace
-from rdflib.graph import ConjunctiveGraph, Dataset, Graph
+from rdflib import ConjunctiveGraph, Dataset, Graph
 from rdflib.namespace import Namespace
 from rdflib.plugins.sparql.sparql import Query
 from rdflib.plugins.stores.memory import Memory

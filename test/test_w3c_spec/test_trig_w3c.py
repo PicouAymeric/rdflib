@@ -9,7 +9,7 @@ from contextlib import ExitStack
 
 import pytest
 
-from rdflib.graph import Dataset
+from rdflib import Dataset
 from test.data import TEST_DATA_DIR
 from test.utils import BNodeHandling, GraphHelper, ensure_suffix
 from test.utils.dawg_manifest import ManifestEntry, params_from_sources

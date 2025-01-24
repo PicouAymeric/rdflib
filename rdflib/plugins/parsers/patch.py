@@ -6,7 +6,7 @@ from enum import Enum
 from typing import TYPE_CHECKING, Any, Union
 
 from rdflib.exceptions import ParserError as ParseError
-from rdflib.graph import Dataset
+from rdflib import Dataset
 from rdflib.parser import InputSource
 from rdflib.plugins.parsers.nquads import NQuadsParser
 

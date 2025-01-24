@@ -1,4 +1,4 @@
-from rdflib.graph import Dataset, Graph
+from rdflib import Dataset, Graph
 from rdflib.term import URIRef
 
 dataset = Dataset(default_union=False)

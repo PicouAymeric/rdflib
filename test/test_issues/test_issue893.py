@@ -1,6 +1,6 @@
 import pickle
 
-from rdflib.graph import Dataset
+from rdflib import Dataset
 from rdflib.namespace import Namespace
 
 

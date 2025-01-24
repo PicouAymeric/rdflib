@@ -7,8 +7,7 @@ from typing import TYPE_CHECKING, Any, Union
 
 import pytest
 
-from rdflib import Graph
-from rdflib.graph import Dataset
+from rdflib import Graph, Dataset
 from rdflib.namespace import (
     _NAMESPACE_PREFIXES_CORE,
     _NAMESPACE_PREFIXES_RDFLIB,

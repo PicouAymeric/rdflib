@@ -13,7 +13,7 @@ from typing import (
 )
 
 import rdflib.plugins.sparql
-from rdflib.graph import ConjunctiveGraph, Dataset, Graph
+from rdflib import ConjunctiveGraph, Dataset, Graph
 from rdflib.namespace import NamespaceManager
 from rdflib.plugins.sparql.parserutils import CompValue
 from rdflib.term import BNode, Identifier, Literal, Node, URIRef, Variable

@@ -8,7 +8,7 @@ from typing import Any, Union
 
 import pytest
 
-from rdflib.graph import ConjunctiveGraph, Dataset, Graph
+from rdflib import ConjunctiveGraph, Dataset, Graph
 from rdflib.term import URIRef
 from test.utils import (
     COLLAPSED_BNODE,

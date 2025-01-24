@@ -21,7 +21,8 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib.compare
 import rdflib.util
-from rdflib.graph import Dataset, _GraphT
+from rdflib import Dataset
+from rdflib.graph import _GraphT
 from rdflib.namespace import XSD
 from rdflib.term import URIRef
 from test.data import TEST_DATA_DIR

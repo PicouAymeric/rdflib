@@ -4,7 +4,7 @@ from typing import Callable
 
 import pytest
 
-from rdflib.graph import ConjunctiveGraph, Dataset, Graph
+from rdflib import ConjunctiveGraph, Dataset, Graph
 from test.data import TEST_DATA_DIR
 from test.utils import GraphHelper
 from test.utils.graph import GraphSource

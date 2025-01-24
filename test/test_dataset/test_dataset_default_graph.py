@@ -8,7 +8,8 @@ from typing import Union
 import pytest
 from _pytest.mark.structures import ParameterSet
 
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Dataset
+from rdflib.graph import ConjunctiveGraph
+from rdflib.dataset import DATASET_DEFAULT_GRAPH_ID, Dataset
 from rdflib.term import BNode, URIRef
 from test.data import TEST_DATA_DIR
 

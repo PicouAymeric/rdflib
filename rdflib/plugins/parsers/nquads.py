@@ -30,7 +30,7 @@ from collections.abc import MutableMapping
 from typing import Any
 
 from rdflib.exceptions import ParserError as ParseError
-from rdflib.graph import ConjunctiveGraph, Dataset, Graph
+from rdflib import ConjunctiveGraph, Dataset, Graph
 from rdflib.parser import InputSource
 
 # Build up from the NTriples parser:

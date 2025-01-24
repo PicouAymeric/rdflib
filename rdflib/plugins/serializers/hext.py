@@ -10,7 +10,8 @@ import warnings
 from collections.abc import Callable
 from typing import IO, Any, Union, cast
 
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Dataset, Graph
+from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.dataset import DATASET_DEFAULT_GRAPH_ID, Dataset
 from rdflib.namespace import RDF, XSD
 from rdflib.serializer import Serializer
 from rdflib.term import BNode, IdentifiedNode, Literal, URIRef

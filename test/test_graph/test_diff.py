@@ -8,9 +8,8 @@ import pytest
 from _pytest.mark.structures import ParameterSet
 
 import rdflib
-from rdflib import Graph
+from rdflib import Graph, ConjunctiveGraph, Dataset
 from rdflib.compare import graph_diff
-from rdflib.graph import ConjunctiveGraph, Dataset
 from rdflib.namespace import FOAF, RDF
 from rdflib.term import BNode, Literal
 from test.utils import (

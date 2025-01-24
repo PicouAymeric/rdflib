@@ -17,7 +17,7 @@ import pytest
 from pytest import MonkeyPatch
 
 import rdflib
-from rdflib.graph import Dataset, Graph
+from rdflib import Dataset, Graph
 from rdflib.namespace import RDFS
 from rdflib.plugins import sparql as rdflib_sparql_module
 from rdflib.plugins.sparql.algebra import translateQuery, translateUpdate

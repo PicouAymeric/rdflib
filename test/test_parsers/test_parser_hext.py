@@ -2,7 +2,7 @@ from pathlib import Path
 
 from rdflib import BNode, ConjunctiveGraph, Dataset, Literal, URIRef
 from rdflib.compare import isomorphic
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
+from rdflib.dataset import DATASET_DEFAULT_GRAPH_ID
 from rdflib.namespace import XSD
 
 
