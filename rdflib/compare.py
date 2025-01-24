@@ -95,7 +95,8 @@ from datetime import datetime
 from hashlib import sha256
 from typing import TYPE_CHECKING, Optional, Union
 
-from rdflib.graph import ConjunctiveGraph, Graph, ReadOnlyGraphAggregate, _TripleType
+from rdflib.graph import Graph, _TripleType
+from rdflib.dataset import ReadOnlyGraphAggregate
 from rdflib.term import BNode, IdentifiedNode, Node, URIRef
 
 if TYPE_CHECKING:
@@ -146,8 +147,8 @@ class _call_count:  # noqa: N801
 
         return wrapped_f
 
-
-class IsomorphicGraph(ConjunctiveGraph):
+# FIXME or should imherit from Dataset?
+class IsomorphicGraph(Graph):
     """An implementation of the RGDA1 graph digest algorithm.
 
     An implementation of RGDA1 (publication below),

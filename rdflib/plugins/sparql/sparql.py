@@ -13,7 +13,7 @@ from typing import (
 )
 
 import rdflib.plugins.sparql
-from rdflib import ConjunctiveGraph, Dataset, Graph
+from rdflib import Dataset, Graph
 from rdflib.namespace import NamespaceManager
 from rdflib.plugins.sparql.parserutils import CompValue
 from rdflib.term import BNode, Identifier, Literal, Node, URIRef, Variable
@@ -254,8 +254,8 @@ class QueryContext:
             self.bindings.update(initBindings)
 
         self.graph: Graph | None
-        self._dataset: Dataset | ConjunctiveGraph | None
-        if isinstance(graph, (Dataset, ConjunctiveGraph)):
+        self._dataset: Dataset | None
+        if isinstance(graph, Dataset):
             if datasetClause:
                 self._dataset = Dataset()
                 self.graph = Graph()
@@ -310,7 +310,7 @@ class QueryContext:
         return r
 
     @property
-    def dataset(self) -> ConjunctiveGraph:
+    def dataset(self) -> Dataset:
         """ "current dataset"""
         if self._dataset is None:
             raise Exception(
