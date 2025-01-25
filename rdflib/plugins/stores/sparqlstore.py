@@ -74,7 +74,7 @@ class SPARQLStore(SPARQLConnector, Store):
     This is context-aware and should work as expected
     when a context is specified.
 
-    For ConjunctiveGraphs, reading is done from the "default graph". Exactly
+    For Datasets, reading is done from the "default graph". Exactly
     what this means depends on your endpoint, because SPARQL does not offer a
     simple way to query the union of all graphs as it would be expected for a
     ConjuntiveGraph. This is why we recommend using Dataset instead, which is
@@ -595,7 +595,7 @@ class SPARQLUpdateStore(SPARQLStore):
     graph only.
 
     In favor of the SPARQL 1.1 motivated Dataset, we advise against using this
-    with ConjunctiveGraphs, as it reads and writes from and to the
+    with Datasets, as it reads and writes from and to the
     "default graph". Exactly what this means depends on the endpoint and can
     result in confusion.
 

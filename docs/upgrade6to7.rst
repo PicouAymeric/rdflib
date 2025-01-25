@@ -13,7 +13,7 @@ New behaviour for ``publicID`` in ``parse`` methods.
 ----------------------------------------------------
 
 Before version 7, the ``publicID`` argument to the
-:meth:`rdflib.graph.ConjunctiveGraph.parse` and
+:meth:`rdflib.graph.Dataset.parse` and
 :meth:`rdflib.graph.Dataset.parse` methods was used as the name for the default
 graph, and triples from the default graph in a source were loaded into the graph
 named ``publicID``.
@@ -30,9 +30,9 @@ into a named graph, use the following code:
 
 .. code-block:: python
     
-    from rdflib import ConjunctiveGraph
+    from rdflib import Dataset
 
-    cg = ConjunctiveGraph()
+    cg = Dataset()
     cg.get_context("example:graph_name").parse("http://example.com/source.ttl", format="turtle")
 
 If you want to move triples from the default graph into a named graph, use the
@@ -40,9 +40,9 @@ following code:
 
 .. code-block:: python
 
-    from rdflib import ConjunctiveGraph
+    from rdflib import Dataset
 
-    cg = ConjunctiveGraph()
+    cg = Dataset()
     cg.parse("http://example.com/source.trig", format="trig")
     destination_graph = cg.get_context("example:graph_name")
     for triple in cg.default_context.triples((None, None, None)):

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import IO, Any
 
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib import Dataset, Graph
 from rdflib.namespace import Namespace
 from rdflib.plugins.serializers.xmlwriter import XMLWriter
 from rdflib.serializer import Serializer
@@ -42,7 +42,7 @@ class TriXSerializer(Serializer):
             self.writer.attribute("http://www.w3.org/XML/1998/namespacebase", base)
         self.writer.namespaces()
 
-        if isinstance(self.store, ConjunctiveGraph):
+        if isinstance(self.store, Dataset):
             for subgraph in self.store.contexts():
                 self._writeGraph(subgraph)
         elif isinstance(self.store, Graph):

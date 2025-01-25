@@ -7,7 +7,8 @@ from __future__ import annotations
 
 from typing import IO, TYPE_CHECKING, Any, Union
 
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import Graph
+from rdflib.dataset import Dataset
 from rdflib.plugins.serializers.turtle import TurtleSerializer
 from rdflib.term import BNode, Node
 
@@ -21,11 +22,11 @@ class TrigSerializer(TurtleSerializer):
     short_name = "trig"
     indentString = 4 * " "
 
-    def __init__(self, store: Union[Graph, ConjunctiveGraph]):
+    def __init__(self, store: Union[Graph, Dataset]):
         self.default_context: Node | None
         if store.context_aware:
             if TYPE_CHECKING:
-                assert isinstance(store, ConjunctiveGraph)
+                assert isinstance(store, Dataset)
             self.contexts = list(store.contexts())
             self.default_context = store.default_context.identifier
             if store.default_context:

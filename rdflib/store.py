@@ -409,7 +409,7 @@ class Store:
         If None the graph is specified in the query-string/object
         If URIRef it specifies the graph to query,
         If  '__UNION__' the union of all named graphs should be queried
-        (This is used by ConjunctiveGraphs
+        (This is used by Datasets
         Values other than None obviously only makes sense for
         context-aware stores.)
 
@@ -433,7 +433,7 @@ class Store:
         If None the graph is specified in the query-string/object
         If URIRef it specifies the graph to query,
         If  '__UNION__' the union of all named graphs should be queried
-        (This is used by ConjunctiveGraphs
+        (This is used by Datasets
         Values other than None obviously only makes sense for
         context-aware stores.)
 

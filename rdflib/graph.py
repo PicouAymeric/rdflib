@@ -4,7 +4,6 @@ RDFLib defines the following kinds of Graphs:
 
 * :class:`~rdflib.graph.Graph`
 * :class:`~rdflib.graph.QuotedGraph`
-* :class:`~rdflib.graph.ConjunctiveGraph`
 
 Graph
 -----
@@ -14,23 +13,6 @@ operator, as well as iteration and some operations like union,
 difference and intersection.
 
 see :class:`~rdflib.graph.Graph`
-
-Conjunctive Graph
------------------
-
-.. warning::
-    ConjunctiveGraph is deprecated, use :class:`~rdflib.graph.Dataset` instead.
-
-A Conjunctive Graph is the most relevant collection of graphs that are
-considered to be the boundary for closed world assumptions.  This
-boundary is equivalent to that of the store instance (which is itself
-uniquely identified and distinct from other instances of
-:class:`~rdflib.store.Store` that signify other Conjunctive Graphs).  It is
-equivalent to all the named graphs within it and associated with a
-``_default_`` graph which is automatically assigned a
-:class:`~rdflib.term.BNode` for an identifier - if one isn't given.
-
-see :class:`~rdflib.graph.ConjunctiveGraph`
 
 Quoted graph
 ------------
@@ -49,200 +31,7 @@ by N3 into an RDF graph upon which RDF semantics is defined.
 
 see :class:`~rdflib.graph.QuotedGraph`
 
-Dataset
--------
 
-The RDF 1.1 Dataset, a small extension to the Conjunctive Graph. The
-primary term is "graphs in the datasets" and not "contexts with quads"
-so there is a separate method to set/retrieve a graph in a dataset and
-to operate with dataset graphs. As a consequence of this approach,
-dataset graphs cannot be identified with blank nodes, a name is always
-required (RDFLib will automatically add a name if one is not provided
-at creation time). This implementation includes a convenience method
-to directly add a single quad to a dataset graph.
-
-see :class:`~rdflib.graph.Dataset`
-
-Working with graphs
-===================
-
-Instantiating Graphs with default store (Memory) and default identifier
-(a BNode):
-
-    >>> g = Graph()
-    >>> g.store.__class__
-    <class 'rdflib.plugins.stores.memory.Memory'>
-    >>> g.identifier.__class__
-    <class 'rdflib.term.BNode'>
-
-Instantiating Graphs with a Memory store and an identifier -
-<https://rdflib.github.io>:
-
-    >>> g = Graph('Memory', URIRef("https://rdflib.github.io"))
-    >>> g.identifier
-    rdflib.term.URIRef('https://rdflib.github.io')
-    >>> str(g)  # doctest: +NORMALIZE_WHITESPACE
-    "<https://rdflib.github.io> a rdfg:Graph;rdflib:storage
-     [a rdflib:Store;rdfs:label 'Memory']."
-
-Creating a ConjunctiveGraph - The top level container for all named Graphs
-in a "database":
-
-    >>> g = ConjunctiveGraph()
-    >>> str(g.default_context)
-    "[a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'Memory']]."
-
-Adding / removing reified triples to Graph and iterating over it directly or
-via triple pattern:
-
-    >>> g = Graph()
-    >>> statementId = BNode()
-    >>> print(len(g))
-    0
-    >>> g.add((statementId, RDF.type, RDF.Statement)) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> g.add((statementId, RDF.subject,
-    ...     URIRef("https://rdflib.github.io/store/ConjunctiveGraph"))) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> g.add((statementId, RDF.predicate, namespace.RDFS.label)) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> g.add((statementId, RDF.object, Literal("Conjunctive Graph"))) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> print(len(g))
-    4
-    >>> for s, p, o in g:
-    ...     print(type(s))
-    ...
-    <class 'rdflib.term.BNode'>
-    <class 'rdflib.term.BNode'>
-    <class 'rdflib.term.BNode'>
-    <class 'rdflib.term.BNode'>
-
-    >>> for s, p, o in g.triples((None, RDF.object, None)):
-    ...     print(o)
-    ...
-    Conjunctive Graph
-    >>> g.remove((statementId, RDF.type, RDF.Statement)) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> print(len(g))
-    3
-
-``None`` terms in calls to :meth:`~rdflib.graph.Graph.triples` can be
-thought of as "open variables".
-
-Graph support set-theoretic operators, you can add/subtract graphs, as
-well as intersection (with multiplication operator g1*g2) and xor (g1
-^ g2).
-
-Note that BNode IDs are kept when doing set-theoretic operations, this
-may or may not be what you want. Two named graphs within the same
-application probably want share BNode IDs, two graphs with data from
-different sources probably not.  If your BNode IDs are all generated
-by RDFLib they are UUIDs and unique.
-
-    >>> g1 = Graph()
-    >>> g2 = Graph()
-    >>> u = URIRef("http://example.com/foo")
-    >>> g1.add([u, namespace.RDFS.label, Literal("foo")]) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> g1.add([u, namespace.RDFS.label, Literal("bar")]) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> g2.add([u, namespace.RDFS.label, Literal("foo")]) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> g2.add([u, namespace.RDFS.label, Literal("bing")]) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> len(g1 + g2)  # adds bing as label
-    3
-    >>> len(g1 - g2)  # removes foo
-    1
-    >>> len(g1 * g2)  # only foo
-    1
-    >>> g1 += g2  # now g1 contains everything
-
-
-Graph Aggregation - ConjunctiveGraphs and ReadOnlyGraphAggregate within
-the same store:
-
-    >>> store = plugin.get("Memory", Store)()
-    >>> g1 = Graph(store)
-    >>> g2 = Graph(store)
-    >>> g3 = Graph(store)
-    >>> stmt1 = BNode()
-    >>> stmt2 = BNode()
-    >>> stmt3 = BNode()
-    >>> g1.add((stmt1, RDF.type, RDF.Statement)) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> g1.add((stmt1, RDF.subject,
-    ...     URIRef('https://rdflib.github.io/store/ConjunctiveGraph'))) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> g1.add((stmt1, RDF.predicate, namespace.RDFS.label)) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> g1.add((stmt1, RDF.object, Literal('Conjunctive Graph'))) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> g2.add((stmt2, RDF.type, RDF.Statement)) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> g2.add((stmt2, RDF.subject,
-    ...     URIRef('https://rdflib.github.io/store/ConjunctiveGraph'))) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> g2.add((stmt2, RDF.predicate, RDF.type)) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> g2.add((stmt2, RDF.object, namespace.RDFS.Class)) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> g3.add((stmt3, RDF.type, RDF.Statement)) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> g3.add((stmt3, RDF.subject,
-    ...     URIRef('https://rdflib.github.io/store/ConjunctiveGraph'))) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> g3.add((stmt3, RDF.predicate, namespace.RDFS.comment)) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> g3.add((stmt3, RDF.object, Literal(
-    ...     'The top-level aggregate graph - The sum ' +
-    ...     'of all named graphs within a Store'))) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> len(list(ConjunctiveGraph(store).subjects(RDF.type, RDF.Statement)))
-    3
-    >>> len(list(ReadOnlyGraphAggregate([g1,g2]).subjects(
-    ...     RDF.type, RDF.Statement)))
-    2
-
-ConjunctiveGraphs have a :meth:`~rdflib.graph.ConjunctiveGraph.quads` method
-which returns quads instead of triples, where the fourth item is the Graph
-(or subclass thereof) instance in which the triple was asserted:
-
-    >>> uniqueGraphNames = set(
-    ...     [graph.identifier for s, p, o, graph in ConjunctiveGraph(store
-    ...     ).quads((None, RDF.predicate, None))])
-    >>> len(uniqueGraphNames)
-    3
-    >>> unionGraph = ReadOnlyGraphAggregate([g1, g2])
-    >>> uniqueGraphNames = set(
-    ...     [graph.identifier for s, p, o, graph in unionGraph.quads(
-    ...     (None, RDF.predicate, None))])
-    >>> len(uniqueGraphNames)
-    2
-
-Parsing N3 from a string
-
-    >>> g2 = Graph()
-    >>> src = '''
-    ... @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-    ... @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-    ... [ a rdf:Statement ;
-    ...   rdf:subject <https://rdflib.github.io/store#ConjunctiveGraph>;
-    ...   rdf:predicate rdfs:label;
-    ...   rdf:object "Conjunctive Graph" ] .
-    ... '''
-    >>> g2 = g2.parse(data=src, format="n3")
-    >>> print(len(g2))
-    4
-
-Using Namespace class:
-
-    >>> RDFLib = Namespace("https://rdflib.github.io/")
-    >>> RDFLib.ConjunctiveGraph
-    rdflib.term.URIRef('https://rdflib.github.io/ConjunctiveGraph')
-    >>> RDFLib["Graph"]
-    rdflib.term.URIRef('https://rdflib.github.io/Graph')
 
 """
 
@@ -363,7 +152,6 @@ _TripleOrQuadSelectorType: te.TypeAlias = Union[_TripleSelectorType, _QuadSelect
 
 
 _GraphT = TypeVar("_GraphT", bound="Graph")
-_ConjunctiveGraphT = TypeVar("_ConjunctiveGraphT", bound="ConjunctiveGraph")
 _QuotedGraphT = TypeVar("_QuotedGraphT", bound="QuotedGraph")
 
 _builtin_set_t = set
@@ -381,15 +169,12 @@ logger = logging.getLogger(__name__)
 
 __all__ = [
     "Graph",
-    "ConjunctiveGraph",
     "QuotedGraph",
     "Seq",
     "ModificationException",
-    "Dataset",
     "UnSupportedAggregateOperation",
     "ReadOnlyGraphAggregate",
     "BatchAddGraph",
-    "_ConjunctiveGraphT",
     "_ContextIdentifierType",
     "_GraphT",
     "_ObjectType",
@@ -1664,8 +1449,9 @@ class Graph(Node):
 
         if self.default_union:
             query_graph = "__UNION__"
-        elif isinstance(self, ConjunctiveGraph):
-            query_graph = self.default_context.identifier
+        #FIXME Do we still need to manage that?
+        #elif isinstance(self, ConjunctiveGraph):
+        #    query_graph = self.default_context.identifier
         else:
             query_graph = self.identifier
         if hasattr(self.store, "query") and use_store_provided:
@@ -1720,8 +1506,9 @@ class Graph(Node):
 
         if self.default_union:
             query_graph = "__UNION__"
-        elif isinstance(self, ConjunctiveGraph):
-            query_graph = self.default_context.identifier
+        #FIXME Do we still need to manage that?
+        #elif isinstance(self, ConjunctiveGraph):
+        #    query_graph = self.default_context.identifier
         else:
             query_graph = self.identifier
 
@@ -2004,412 +1791,6 @@ class Graph(Node):
 _ContextType: te.TypeAlias = Union[Graph]
 
 
-class ConjunctiveGraph(Graph):
-    """A ConjunctiveGraph is an (unnamed) aggregation of all the named
-    graphs in a store.
-
-    .. warning::
-        ConjunctiveGraph is deprecated, use :class:`~rdflib.graph.Dataset` instead.
-
-    It has a ``default`` graph, whose name is associated with the
-    graph throughout its life. :meth:`__init__` can take an identifier
-    to use as the name of this default graph or it will assign a
-    BNode.
-
-    All methods that add triples work against this default graph.
-
-    All queries are carried out against the union of all graphs.
-    """
-
-    default_context: _ContextType
-
-    def __init__(
-        self,
-        store: Store | str = "default",
-        identifier: IdentifiedNode | str | None = None,
-        default_graph_base: str | None = None,
-    ):
-        super(ConjunctiveGraph, self).__init__(store, identifier=identifier)
-
-        if type(self) is ConjunctiveGraph:
-            warnings.warn(
-                "ConjunctiveGraph is deprecated, use Dataset instead.",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-
-        assert self.store.context_aware, (
-            "ConjunctiveGraph must be backed by" " a context aware store."
-        )
-        self.context_aware = True
-        self.default_union = True  # Conjunctive!
-        self.default_context: _ContextType = Graph(
-            store=self.store, identifier=identifier or BNode(), base=default_graph_base
-        )
-
-    def __getnewargs__(self) -> tuple[Any, ...]:
-        return (self.store, self.__identifier, self.default_context.base)
-
-    def __str__(self) -> str:
-        pattern = (
-            "[a rdflib:ConjunctiveGraph;rdflib:storage "
-            "[a rdflib:Store;rdfs:label '%s']]"
-        )
-        return pattern % self.store.__class__.__name__
-
-    @overload
-    def _spoc(
-        self,
-        triple_or_quad: _QuadType,
-        default: bool = False,
-    ) -> _QuadType: ...
-
-    @overload
-    def _spoc(
-        self,
-        triple_or_quad: _TripleType | _OptionalQuadType,
-        default: bool = False,
-    ) -> _OptionalQuadType: ...
-
-    @overload
-    def _spoc(
-        self,
-        triple_or_quad: None,
-        default: bool = False,
-    ) -> tuple[None, None, None, Graph | None]: ...
-
-    @overload
-    def _spoc(
-        self,
-        triple_or_quad: _TripleOrQuadPatternType | None,
-        default: bool = False,
-    ) -> _QuadPatternType: ...
-
-    @overload
-    def _spoc(
-        self,
-        triple_or_quad: _TripleOrQuadSelectorType,
-        default: bool = False,
-    ) -> _QuadSelectorType: ...
-
-    @overload
-    def _spoc(
-        self,
-        triple_or_quad: _TripleOrQuadSelectorType | None,
-        default: bool = False,
-    ) -> _QuadSelectorType: ...
-
-    def _spoc(
-        self,
-        triple_or_quad: _TripleOrQuadSelectorType | None,
-        default: bool = False,
-    ) -> _QuadSelectorType:
-        """
-        helper method for having methods that support
-        either triples or quads
-        """
-        if triple_or_quad is None:
-            return (None, None, None, self.default_context if default else None)
-        if len(triple_or_quad) == 3:
-            c = self.default_context if default else None
-            # type error: Too many values to unpack (3 expected, 4 provided)
-            (s, p, o) = triple_or_quad  # type: ignore[misc, unused-ignore]
-        elif len(triple_or_quad) == 4:
-            # type error: Need more than 3 values to unpack (4 expected)
-            (s, p, o, c) = triple_or_quad  # type: ignore[misc, unused-ignore]
-            c = self._graph(c)
-        return s, p, o, c
-
-    def __contains__(self, triple_or_quad: _TripleOrQuadSelectorType) -> bool:
-        """Support for 'triple/quad in graph' syntax"""
-        s, p, o, c = self._spoc(triple_or_quad)
-        for t in self.triples((s, p, o), context=c):
-            return True
-        return False
-
-    def add(
-        self: _ConjunctiveGraphT,
-        triple_or_quad: _TripleOrOptionalQuadType,
-    ) -> _ConjunctiveGraphT:
-        """
-        Add a triple or quad to the store.
-
-        if a triple is given it is added to the default context
-        """
-
-        s, p, o, c = self._spoc(triple_or_quad, default=True)
-
-        _assertnode(s, p, o)
-
-        # type error: Argument "context" to "add" of "Store" has incompatible type "Optional[Graph]"; expected "Graph"
-        self.store.add((s, p, o), context=c, quoted=False)  # type: ignore[arg-type]
-        return self
-
-    @overload
-    def _graph(self, c: Graph | _ContextIdentifierType | str) -> Graph: ...
-
-    @overload
-    def _graph(self, c: None) -> None: ...
-
-    def _graph(self, c: Graph | _ContextIdentifierType | str | None) -> Graph | None:
-        if c is None:
-            return None
-        if not isinstance(c, Graph):
-            return self.get_context(c)
-        else:
-            return c
-
-    def addN(  # noqa: N802
-        self: _ConjunctiveGraphT, quads: Iterable[_QuadType]
-    ) -> _ConjunctiveGraphT:
-        """Add a sequence of triples with context"""
-
-        self.store.addN(
-            (s, p, o, self._graph(c)) for s, p, o, c in quads if _assertnode(s, p, o)
-        )
-        return self
-
-    # type error: Argument 1 of "remove" is incompatible with supertype "Graph"; supertype defines the argument type as "tuple[Optional[Node], Optional[Node], Optional[Node]]"
-    def remove(self: _ConjunctiveGraphT, triple_or_quad: _TripleOrOptionalQuadType) -> _ConjunctiveGraphT:  # type: ignore[override]
-        """
-        Removes a triple or quads
-
-        if a triple is given it is removed from all contexts
-
-        a quad is removed from the given context only
-
-        """
-        s, p, o, c = self._spoc(triple_or_quad)
-
-        self.store.remove((s, p, o), context=c)
-        return self
-
-    @overload
-    def triples(
-        self,
-        triple_or_quad: _TripleOrQuadPatternType,
-        context: _ContextType | None = ...,
-    ) -> Generator[_TripleType, None, None]: ...
-
-    @overload
-    def triples(
-        self,
-        triple_or_quad: _TripleOrQuadPathPatternType,
-        context: _ContextType | None = ...,
-    ) -> Generator[_TriplePathType, None, None]: ...
-
-    @overload
-    def triples(
-        self,
-        triple_or_quad: _TripleOrQuadSelectorType,
-        context: _ContextType | None = ...,
-    ) -> Generator[_TripleOrTriplePathType, None, None]: ...
-
-    def triples(
-        self,
-        triple_or_quad: _TripleOrQuadSelectorType,
-        context: _ContextType | None = None,
-    ) -> Generator[_TripleOrTriplePathType, None, None]:
-        """
-        Iterate over all the triples in the entire conjunctive graph
-
-        For legacy reasons, this can take the context to query either
-        as a fourth element of the quad, or as the explicit context
-        keyword parameter. The kw param takes precedence.
-        """
-
-        s, p, o, c = self._spoc(triple_or_quad)
-        context = self._graph(context or c)
-
-        if self.default_union:
-            if context == self.default_context:
-                context = None
-        else:
-            if context is None:
-                context = self.default_context
-
-        if isinstance(p, Path):
-            if context is None:
-                context = self
-
-            for s, o in p.eval(context, s, o):
-                yield s, p, o
-        else:
-            for (s, p, o), cg in self.store.triples((s, p, o), context=context):
-                yield s, p, o
-
-    def quads(
-        self, triple_or_quad: _TripleOrQuadPatternType | None = None
-    ) -> Generator[_OptionalQuadType, None, None]:
-        """Iterate over all the quads in the entire conjunctive graph"""
-
-        s, p, o, c = self._spoc(triple_or_quad)
-
-        for (s, p, o), cg in self.store.triples((s, p, o), context=c):
-            for ctx in cg:
-                yield s, p, o, ctx
-
-    def triples_choices(
-        self,
-        triple: (
-            tuple[
-                list[_SubjectType] | tuple[_SubjectType, ...],
-                _PredicateType,
-                _ObjectType | None,
-            ]
-            | tuple[
-                _SubjectType | None,
-                list[_PredicateType] | tuple[_PredicateType, ...],
-                _ObjectType | None,
-            ]
-            | tuple[
-                _SubjectType | None,
-                _PredicateType,
-                list[_ObjectType] | tuple[_ObjectType, ...],
-            ]
-        ),
-        context: _ContextType | None = None,
-    ) -> Generator[_TripleType, None, None]:
-        """Iterate over all the triples in the entire conjunctive graph"""
-        s, p, o = triple
-        if context is None:
-            if not self.default_union:
-                context = self.default_context
-        else:
-            context = self._graph(context)
-        # type error: Argument 1 to "triples_choices" of "Store" has incompatible type "tuple[Union[list[Node], Node], Union[Node, list[Node]], Union[Node, list[Node]]]"; expected "Union[tuple[list[Node], Node, Node], tuple[Node, list[Node], Node], tuple[Node, Node, list[Node]]]"
-        # type error note: unpacking discards type info
-        for (s1, p1, o1), cg in self.store.triples_choices((s, p, o), context=context):  # type: ignore[arg-type]
-            yield s1, p1, o1
-
-    def __len__(self) -> int:
-        """Number of triples in the entire conjunctive graph"""
-        return self.store.__len__()
-
-    def contexts(
-        self, triple: _TripleType | None = None
-    ) -> Generator[_ContextType, None, None]:
-        """Iterate over all contexts in the graph
-
-        If triple is specified, iterate over all contexts the triple is in.
-        """
-        for context in self.store.contexts(triple):
-            if isinstance(context, Graph):
-                # TODO: One of these should never happen and probably
-                # should raise an exception rather than smoothing over
-                # the weirdness - see #225
-                yield context
-            else:
-                # type error: Statement is unreachable
-                yield self.get_context(context)  # type: ignore[unreachable]
-
-    def get_graph(self, identifier: _ContextIdentifierType) -> Graph | None:
-        """Returns the graph identified by given identifier"""
-        return [x for x in self.contexts() if x.identifier == identifier][0]
-
-    def get_context(
-        self,
-        identifier: _ContextIdentifierType | str | None,
-        quoted: bool = False,
-        base: str | None = None,
-    ) -> Graph:
-        """Return a context graph for the given identifier
-
-        identifier must be a URIRef or BNode.
-        """
-        return Graph(
-            store=self.store,
-            identifier=identifier,
-            namespace_manager=self.namespace_manager,
-            base=base,
-        )
-
-    def remove_context(self, context: _ContextType) -> None:
-        """Removes the given context from the graph"""
-        self.store.remove((None, None, None), context)
-
-    def context_id(self, uri: str, context_id: str | None = None) -> URIRef:
-        """URI#context"""
-        uri = uri.split("#", 1)[0]
-        if context_id is None:
-            context_id = "#context"
-        return URIRef(context_id, base=uri)
-
-    def parse(
-        self,
-        source: (
-            IO[bytes] | TextIO | InputSource | str | bytes | pathlib.PurePath | None
-        ) = None,
-        publicID: str | None = None,  # noqa: N803
-        format: str | None = None,
-        location: str | None = None,
-        file: BinaryIO | TextIO | None = None,
-        data: str | bytes | None = None,
-        **args: Any,
-    ) -> Graph:
-        """
-        Parse source adding the resulting triples to its own context (sub graph
-        of this graph).
-
-        See :meth:`rdflib.graph.Graph.parse` for documentation on arguments.
-
-        If the source is in a format that does not support named graphs its triples
-        will be added to the default graph
-        (i.e. :attr:`ConjunctiveGraph.default_context`).
-
-        :Returns:
-
-        The graph into which the source was parsed. In the case of n3 it returns
-        the root context.
-
-        .. caution::
-
-           This method can access directly or indirectly requested network or
-           file resources, for example, when parsing JSON-LD documents with
-           ``@context`` directives that point to a network location.
-
-           When processing untrusted or potentially malicious documents,
-           measures should be taken to restrict network and file access.
-
-           For information on available security measures, see the RDFLib
-           :doc:`Security Considerations </security_considerations>`
-           documentation.
-
-        *Changed in 7.0*: The ``publicID`` argument is no longer used as the
-        identifier (i.e. name) of the default graph as was the case before
-        version 7.0. In the case of sources that do not support named graphs,
-        the ``publicID`` parameter will also not be used as the name for the
-        graph that the data is loaded into, and instead the triples from sources
-        that do not support named graphs will be loaded into the default graph
-        (i.e. :attr:`ConjunctiveGraph.default_context`).
-        """
-
-        source = create_input_source(
-            source=source,
-            publicID=publicID,
-            location=location,
-            file=file,
-            data=data,
-            format=format,
-        )
-
-        # NOTE on type hint: `xml.sax.xmlreader.InputSource.getPublicId` has no
-        # type annotations but given that systemId should be a string, and
-        # given that there is no specific mention of type for publicId, it
-        # seems reasonable to assume it should also be a string. Furthermore,
-        # create_input_source will ensure that publicId is not None, though it
-        # would be good if this guarantee was made more explicit i.e. by type
-        # hint on InputSource (TODO/FIXME).
-
-        context = self.default_context
-        context.parse(source, publicID=publicID, format=format, **args)
-        # TODO: FIXME: This should not return context, but self.
-        return context
-
-    def __reduce__(self) -> tuple[type[Graph], tuple[Store, _ContextIdentifierType]]:
-        return ConjunctiveGraph, (self.store, self.identifier)
-
-
 class QuotedGraph(Graph, IdentifiedNode):
     """
     Quoted Graphs are intended to implement Notation 3 formulae. They are
@@ -2567,11 +1948,11 @@ class UnSupportedAggregateOperation(Exception):  # noqa: N818
         return "This operation is not supported by ReadOnlyGraphAggregate " "instances"
 
 
-class ReadOnlyGraphAggregate(ConjunctiveGraph):
+class ReadOnlyGraphAggregate(Graph):
     """Utility class for treating a set of graphs as a single graph
 
     Only read operations are supported (hence the name). Essentially a
-    ConjunctiveGraph over an explicit subset of the entire store.
+    Graph over an explicit subset of the entire store.
     """
 
     def __init__(self, graphs: list[Graph], store: Union[str, Store] = "default"):
@@ -2623,7 +2004,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def remove(self, triple: _TripleOrOptionalQuadType) -> NoReturn:  # type: ignore[override]
         raise ModificationException()
 
-    # type error: Signature of "triples" incompatible with supertype "ConjunctiveGraph"
+    # type error: Signature of "triples" incompatible with supertype "Graph"
     @overload  # type: ignore[override]
     def triples(
         self,
@@ -2666,7 +2047,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
                     return True
         return False
 
-    # type error: Signature of "quads" incompatible with supertype "ConjunctiveGraph"
+    # type error: Signature of "quads" incompatible with supertype "Graph"
     def quads(  # type: ignore[override]
         self, triple_or_quad: _TripleOrQuadSelectorType
     ) -> Generator[
@@ -2771,7 +2152,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def absolutize(self, uri: str, defrag: int = 1) -> NoReturn:
         raise UnSupportedAggregateOperation()
 
-    # type error: Signature of "parse" incompatible with supertype "ConjunctiveGraph"
+    # type error: Signature of "parse" incompatible with supertype "Graph"
     def parse(  # type: ignore[override]
         self,
         source: (

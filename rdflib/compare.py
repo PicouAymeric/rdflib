@@ -95,7 +95,7 @@ from datetime import datetime
 from hashlib import sha256
 from typing import TYPE_CHECKING, Optional, Union
 
-from rdflib.graph import ConjunctiveGraph, Graph, ReadOnlyGraphAggregate, _TripleType
+from rdflib.graph import Graph, ReadOnlyGraphAggregate, _TripleType
 from rdflib.term import BNode, IdentifiedNode, Node, URIRef
 
 if TYPE_CHECKING:
@@ -147,7 +147,7 @@ class _call_count:  # noqa: N801
         return wrapped_f
 
 
-class IsomorphicGraph(ConjunctiveGraph):
+class IsomorphicGraph(Graph):
     """An implementation of the RGDA1 graph digest algorithm.
 
     An implementation of RGDA1 (publication below),
@@ -301,7 +301,7 @@ class _TripleCanonicalizer:
         bnodes: set[BNode] = set()
         others = set()
         self._neighbors = defaultdict(set)
-        for s, p, o in self.graph:
+        for s, p, o in self.graph.triples((None, None, None)):
             nodes = set([s, p, o])
             b = set([x for x in nodes if isinstance(x, BNode)])
             if len(b) > 0:
@@ -507,7 +507,7 @@ class _TripleCanonicalizer:
             stats["canonicalize_triples_runtime"] = _total_seconds(
                 datetime.now() - start_coloring
             )
-        for triple in self.graph:
+        for triple in self.graph.triples((None,None,None)):
             result = tuple(self._canonicalize_bnodes(triple, bnode_labels))
             yield result
 

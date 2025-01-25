@@ -3,7 +3,7 @@ BerkeleyDB in use as a persistent Graph store.
 
 Example 1: simple actions
 
-* creating a ConjunctiveGraph using the BerkeleyDB Store
+* creating a Dataset using the BerkeleyDB Store
 * adding triples to it
 * counting them
 * closing the store, emptying the graph
@@ -19,17 +19,17 @@ Example 2: larger data
 import os
 import tempfile
 
-from rdflib import ConjunctiveGraph, Literal, Namespace
+from rdflib import Dataset, Literal, Namespace
 from rdflib.plugins.stores.berkeleydb import has_bsddb
 from rdflib.store import NO_STORE, VALID_STORE
 
 
 def example_1():
-    """Creates a ConjunctiveGraph and performs some BerkeleyDB tasks with it"""
+    """Creates a Dataset and performs some BerkeleyDB tasks with it"""
     path = tempfile.NamedTemporaryFile().name
 
     # Declare we are using a BerkeleyDB Store
-    graph = ConjunctiveGraph("BerkeleyDB")
+    graph = Dataset("BerkeleyDB")
 
     # Open previously created store, or create it if it doesn't exist yet
     # (always doesn't exist in this example as using temp file location)
@@ -67,7 +67,7 @@ def example_1():
     graph = None
 
     # reopen the graph
-    graph = ConjunctiveGraph("BerkeleyDB")
+    graph = Dataset("BerkeleyDB")
 
     graph.open(path, create=False)
 
@@ -106,7 +106,7 @@ def example_2():
     from urllib.error import HTTPError
     from urllib.request import Request, urlopen
 
-    g = ConjunctiveGraph("BerkeleyDB")
+    g = Dataset("BerkeleyDB")
     g.open("gsg_vocabs", create=True)
 
     # gsq_vocabs = "https://api.github.com/repos/geological-survey-of-queensland/vocabularies/git/trees/master"

@@ -97,7 +97,7 @@ def evalInsertData(ctx: QueryContext, u: CompValue) -> None:
     # add quads
     # u.quads is a dict of graphURI=>[triples]
     for g in u.quads:
-        # type error: Argument 1 to "get_context" of "ConjunctiveGraph" has incompatible type "Optional[Graph]"; expected "Union[IdentifiedNode, str, None]"
+        # type error: Argument 1 to "get_context" of "Dataset" has incompatible type "Optional[Graph]"; expected "Union[IdentifiedNode, str, None]"
         cg = ctx.dataset.get_context(g)  # type: ignore[arg-type]
         cg += u.quads[g]
 
@@ -113,7 +113,7 @@ def evalDeleteData(ctx: QueryContext, u: CompValue) -> None:
     # remove quads
     # u.quads is a dict of graphURI=>[triples]
     for g in u.quads:
-        # type error: Argument 1 to "get_context" of "ConjunctiveGraph" has incompatible type "Optional[Graph]"; expected "Union[IdentifiedNode, str, None]"
+        # type error: Argument 1 to "get_context" of "Dataset" has incompatible type "Optional[Graph]"; expected "Union[IdentifiedNode, str, None]"
         cg = ctx.dataset.get_context(g)  # type: ignore[arg-type]
         cg -= u.quads[g]
 

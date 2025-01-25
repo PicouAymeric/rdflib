@@ -49,7 +49,7 @@ from uuid import uuid4
 
 from rdflib.compat import long_type
 from rdflib.exceptions import ParserError
-from rdflib.graph import ConjunctiveGraph, Graph, QuotedGraph
+from rdflib import Dataset, Graph, QuotedGraph
 from rdflib.term import (
     _XSD_PFX,
     BNode,
@@ -2048,7 +2048,7 @@ class N3Parser(TurtleParser):
     def parse(  # type: ignore[override]
         self, source: InputSource, graph: Graph, encoding: str | None = "utf-8"
     ) -> None:
-        # we're currently being handed a Graph, not a ConjunctiveGraph
+        # we're currently being handed a Graph, not a Dataset
         # context-aware is this implied by formula_aware
         ca = getattr(graph.store, "context_aware", False)
         fa = getattr(graph.store, "formula_aware", False)
@@ -2057,10 +2057,10 @@ class N3Parser(TurtleParser):
         elif not fa:
             raise ParserError("Cannot parse N3 into non-formula-aware store.")
 
-        conj_graph = ConjunctiveGraph(store=graph.store)
-        conj_graph.default_context = graph  # TODO: CG __init__ should have a
+        dataset = Dataset(store=graph.store)
+        dataset.default_context = graph  # TODO: CG __init__ should have a
         # default_context arg
-        # TODO: update N3Processor so that it can use conj_graph as the sink
-        conj_graph.namespace_manager = graph.namespace_manager
+        # TODO: update N3Processor so that it can use dataset as the sink
+        dataset.namespace_manager = graph.namespace_manager
 
-        TurtleParser.parse(self, source, conj_graph, encoding, turtle=False)
+        TurtleParser.parse(self, source, dataset, encoding, turtle=False)

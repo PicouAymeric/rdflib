@@ -236,7 +236,7 @@ def evalGraph(
     else:
         if TYPE_CHECKING:
             assert not isinstance(graph, Graph)
-        # type error: Argument 1 to "get_context" of "ConjunctiveGraph" has incompatible type "Union[str, Path]"; expected "Union[Node, str, None]"
+        # type error: Argument 1 to "get_context" of "Dataset" has incompatible type "Union[str, Path]"; expected "Union[Node, str, None]"
         c = ctx.pushGraph(ctx.dataset.get_context(graph))  # type: ignore[arg-type]
         for x in evalPart(c, part.p):
             x.ctx.graph = prev_graph

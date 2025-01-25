@@ -11,7 +11,7 @@ import warnings
 from io import TextIOWrapper
 from typing import TYPE_CHECKING, Any, BinaryIO, TextIO, Union
 
-from rdflib import ConjunctiveGraph, Dataset, Graph
+from rdflib import Dataset, Dataset, Graph
 from rdflib.parser import InputSource, Parser
 from rdflib.term import BNode, Literal, URIRef
 
@@ -40,7 +40,7 @@ class HextuplesParser(Parser):
         self.skolemize = False
 
     def _parse_hextuple(
-        self, ds: Union[Dataset, ConjunctiveGraph], tup: list[Union[str, None]]
+        self, ds: Dataset, tup: list[Union[str, None]]
     ) -> None:
         # all values check
         # subject, predicate, value, datatype cannot be None
@@ -106,10 +106,10 @@ class HextuplesParser(Parser):
         ), "Hextuples Parser needs a context-aware store!"
 
         self.skolemize = skolemize
-        # Set default_union to True to mimic ConjunctiveGraph behavior
+        # Set default_union to True
         ds = Dataset(store=graph.store, default_union=True)
         ds_default = ds.default_context  # the DEFAULT_DATASET_GRAPH_ID
-        if isinstance(graph, (Dataset, ConjunctiveGraph)):
+        if isinstance(graph, Dataset):
             self.default_context = graph.default_context
         elif graph.identifier is not None:
             if graph.identifier == ds_default.identifier:

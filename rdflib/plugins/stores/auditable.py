@@ -21,7 +21,7 @@ import threading
 from collections.abc import Generator, Iterator
 from typing import TYPE_CHECKING, Any
 
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib import Dataset, Graph
 from rdflib.store import Store
 
 if TYPE_CHECKING:
@@ -121,7 +121,7 @@ class AuditableStore(Store):
                         except ValueError:
                             self.reverseOps.append((s, p, o, ctxId, "add"))
                 else:
-                    for s, p, o, ctx in ConjunctiveGraph(self.store).quads(
+                    for s, p, o, ctx in Dataset(self.store).quads(
                         (subject, predicate, object_)
                     ):
                         try:

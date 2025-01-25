@@ -64,7 +64,7 @@ __all__ = [
     "Namespace",
     "Dataset",
     "Graph",
-    "ConjunctiveGraph",
+    "QuotedGraph",
     "BRICK",
     "CSVW",
     "DC",
@@ -166,7 +166,7 @@ Literal work, eq, __neq__, __lt__, etc.
 """
 
 
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import Graph, QuotedGraph
 from rdflib.dataset import Dataset
 from rdflib.namespace import (
     BRICK,

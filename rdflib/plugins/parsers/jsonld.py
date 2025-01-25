@@ -40,7 +40,7 @@ from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, Union
 
 import rdflib.parser
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib import Dataset, Graph
 from rdflib.namespace import RDF, XSD
 from rdflib.parser import InputSource, URLInputSource
 from rdflib.term import BNode, IdentifiedNode, Literal, URIRef
@@ -158,12 +158,12 @@ class JsonLDParser(rdflib.parser.Parser):
         if html_base is not None:
             base = URIRef(html_base, base=base)
 
-        # NOTE: A ConjunctiveGraph parses into a Graph sink, so no sink will be
+        # NOTE: A Graph parses into a Graph sink, so no sink will be
         # context_aware. Keeping this check in case RDFLib is changed, or
         # someone passes something context_aware to this parser directly.
         conj_sink: Graph
         if not sink.context_aware:
-            conj_sink = ConjunctiveGraph(store=sink.store, identifier=sink.identifier)
+            conj_sink = Graph(store=sink.store)
         else:
             conj_sink = sink
 
@@ -365,7 +365,7 @@ class Parser:
         if GRAPH in (key, term_id):
             if dataset.context_aware and not no_id:
                 if TYPE_CHECKING:
-                    assert isinstance(dataset, ConjunctiveGraph)
+                    assert isinstance(dataset, Dataset)
                 subgraph = dataset.get_context(subj)
             else:
                 subgraph = graph

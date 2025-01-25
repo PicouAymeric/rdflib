@@ -10,7 +10,7 @@ import warnings
 from collections.abc import Callable
 from typing import IO, Any, Union, cast
 
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import Graph
 from rdflib.dataset import DATASET_DEFAULT_GRAPH_ID, Dataset
 from rdflib.namespace import RDF, XSD
 from rdflib.serializer import Serializer
@@ -35,7 +35,7 @@ class HextuplesSerializer(Serializer):
     contexts: list[Graph | IdentifiedNode]
     dumps: Callable
 
-    def __new__(cls, store: Graph | Dataset | ConjunctiveGraph):
+    def __new__(cls, store: Graph | Dataset):
         if _HAS_ORJSON:
             cls.str_local_id: str | Any = orjson.Fragment(b'"localId"')
             cls.str_global_id: str | Any = orjson.Fragment(b'"globalId"')
@@ -54,13 +54,11 @@ class HextuplesSerializer(Serializer):
             cls.xsd_string = f"{XSD.string}"
         return super(cls, cls).__new__(cls)
 
-    def __init__(self, store: Graph | Dataset | ConjunctiveGraph):
+    def __init__(self, store: Graph | Dataset):
         self.default_context: Graph | IdentifiedNode | None
-        self.graph_type: type[Graph] | type[Dataset] | type[ConjunctiveGraph]
-        if isinstance(store, (Dataset, ConjunctiveGraph)):
-            self.graph_type = (
-                Dataset if isinstance(store, Dataset) else ConjunctiveGraph
-            )
+        self.graph_type: type[Graph] | type[Dataset]
+        if isinstance(store, Dataset):
+            self.graph_type = Dataset
             self.contexts = list(store.contexts())
             if store.default_context:
                 self.default_context = store.default_context
@@ -200,7 +198,7 @@ class HextuplesSerializer(Serializer):
             ):
                 return ""
         if self.graph_type is Graph:
-            # Only emit a context name when serializing a Dataset or ConjunctiveGraph
+            # Only emit a context name when serializing a Dataset
             return ""
         return (
             f"{context_identifier}"

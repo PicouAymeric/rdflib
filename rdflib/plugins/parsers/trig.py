@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import MutableSequence
 from typing import Any
 
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib import Dataset, Graph
 from rdflib.parser import InputSource, Parser
 
 from .notation3 import RDFSink, SinkParser
@@ -150,18 +150,18 @@ class TrigParser(Parser):
                 % encoding
             )
 
-        # we're currently being handed a Graph, not a ConjunctiveGraph
+        # we're currently being handed a Graph, not a Dataset
         assert graph.store.context_aware, "TriG Parser needs a context-aware store!"
 
-        conj_graph = ConjunctiveGraph(store=graph.store, identifier=graph.identifier)
-        conj_graph.default_context = graph  # TODO: CG __init__ should have a
+        dataset = Dataset(store=graph.store)
+        dataset.default_context = graph  # TODO: CG __init__ should have a
         # default_context arg
         # TODO: update N3Processor so that it can use conj_graph as the sink
-        conj_graph.namespace_manager = graph.namespace_manager
+        dataset.namespace_manager = graph.namespace_manager
 
-        sink = RDFSink(conj_graph)
+        sink = RDFSink(dataset)
 
-        baseURI = conj_graph.absolutize(  # noqa: N806
+        baseURI = dataset.absolutize(  # noqa: N806
             source.getPublicId() or source.getSystemId() or ""
         )
         p = TrigSinkParser(sink, baseURI=baseURI, turtle=True)
@@ -173,6 +173,6 @@ class TrigParser(Parser):
         p.loadStream(stream)
 
         for prefix, namespace in p._bindings.items():
-            conj_graph.bind(prefix, namespace)
+            dataset.bind(prefix, namespace)
 
         # return ???

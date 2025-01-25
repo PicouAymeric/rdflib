@@ -3,7 +3,7 @@ from __future__ import annotations
 import warnings
 from typing import IO, Any
 
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib import Dataset, Graph
 from rdflib.plugins.serializers.nt import _quoteLiteral
 from rdflib.serializer import Serializer
 from rdflib.term import Literal
@@ -19,7 +19,7 @@ class NQuadsSerializer(Serializer):
             )
 
         super(NQuadsSerializer, self).__init__(store)
-        self.store: ConjunctiveGraph
+        self.store: Dataset
 
     def serialize(
         self,

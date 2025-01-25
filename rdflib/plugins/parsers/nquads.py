@@ -3,8 +3,8 @@ This is a rdflib plugin for parsing NQuad files into Conjunctive
 graphs that can be used and queried. The store that backs the graph
 *must* be able to handle contexts.
 
->>> from rdflib import ConjunctiveGraph, URIRef, Namespace
->>> g = ConjunctiveGraph()
+>>> from rdflib import Dataset, URIRef, Namespace
+>>> g = Dataset()
 >>> data = open("test/data/nquads.rdflib/example.nquads", "rb")
 >>> g.parse(data, format="nquads") # doctest:+ELLIPSIS
 <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
@@ -30,7 +30,7 @@ from collections.abc import MutableMapping
 from typing import Any
 
 from rdflib.exceptions import ParserError as ParseError
-from rdflib import ConjunctiveGraph, Dataset, Graph
+from rdflib import Dataset, Graph
 from rdflib.parser import InputSource
 
 # Build up from the NTriples parser:
@@ -67,11 +67,11 @@ class NQuadsParser(W3CNTriplesParser):
         assert (
             sink.store.context_aware
         ), "NQuadsParser must be given a context-aware store."
-        # Set default_union to True to mimic ConjunctiveGraph behavior
+        # Set default_union to True
         ds = Dataset(store=sink.store, default_union=True)
         ds_default = ds.default_context  # the DEFAULT_DATASET_GRAPH_ID
         new_default_context = None
-        if isinstance(sink, (Dataset, ConjunctiveGraph)):
+        if isinstance(sink, Dataset):
             new_default_context = sink.default_context
         elif sink.identifier is not None:
             if sink.identifier == ds_default.identifier:
@@ -82,7 +82,7 @@ class NQuadsParser(W3CNTriplesParser):
         if new_default_context is not None:
             ds.default_context = new_default_context
             ds.remove_graph(ds_default)  # remove the original unused default graph
-        # type error: Incompatible types in assignment (expression has type "ConjunctiveGraph", base class "W3CNTriplesParser" defined the type as "Union[DummySink, NTGraphSink]")
+        # type error: Incompatible types in assignment (expression has type "Dataset", base class "W3CNTriplesParser" defined the type as "Union[DummySink, NTGraphSink]")
         self.sink: Dataset = ds  # type: ignore[assignment]
         self.skolemize = skolemize
 
