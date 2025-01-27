@@ -1,6 +1,6 @@
 from rdflib import (  # noqa: I001
     BNode,
-    ConjunctiveGraph,
+    Dataset,
     Dataset,
     Graph,
     Literal,
@@ -113,8 +113,8 @@ mansynt_class = """
 """
 
 
-def test_generateqname_using_conjunctivegraph() -> None:
-    g = ConjunctiveGraph()
+def test_generateqname_using_Dataset() -> None:
+    g = Dataset()
     g.bind("ex", EXNS)
 
     assert (

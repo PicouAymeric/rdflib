@@ -1,13 +1,13 @@
 import os
 
-from rdflib import ConjunctiveGraph, Graph
+from rdflib import Dataset, Graph
 from test.data import CHEESE, LIKES, MICHEL, PIZZA, TAREK, TEST_DATA_DIR
 
 sportquadstrig = open(os.path.join(TEST_DATA_DIR, "sportquads.trig")).read()
 
 
-def test_operators_with_conjunctivegraph_and_graph():
-    cg = ConjunctiveGraph()
+def test_operators_with_Dataset_and_graph():
+    cg = Dataset()
     cg.add((TAREK, LIKES, PIZZA))
     cg.add((TAREK, LIKES, MICHEL))
 
@@ -24,8 +24,8 @@ def test_operators_with_conjunctivegraph_and_graph():
     assert len(cg ^ g) == 2  # removes PIZZA, adds CHEESE
 
 
-def test_reversed_operators_with_conjunctivegraph_and_graph():
-    cg = ConjunctiveGraph()
+def test_reversed_operators_with_Dataset_and_graph():
+    cg = Dataset()
     cg.add((TAREK, LIKES, PIZZA))
     cg.add((TAREK, LIKES, MICHEL))
 
@@ -42,8 +42,8 @@ def test_reversed_operators_with_conjunctivegraph_and_graph():
     assert len(g ^ cg) == 2  # removes PIZZA, adds CHEESE
 
 
-def test_reversed_operators_with_conjunctivegraph_with_contexts_and_graph():
-    cg = ConjunctiveGraph()
+def test_reversed_operators_with_Dataset_with_contexts_and_graph():
+    cg = Dataset()
     cg.add((TAREK, LIKES, PIZZA))
     cg.add((TAREK, LIKES, MICHEL))
     cg.parse(data=sportquadstrig, format="trig")
@@ -63,12 +63,12 @@ def test_reversed_operators_with_conjunctivegraph_with_contexts_and_graph():
     assert len(g ^ cg) == 9  # removes PIZZA, adds CHEESE and sevenquads
 
 
-def test_operators_with_two_conjunctivegraphs():
-    cg1 = ConjunctiveGraph()
+def test_operators_with_two_Datasets():
+    cg1 = Dataset()
     cg1.add([TAREK, LIKES, PIZZA])
     cg1.add([TAREK, LIKES, MICHEL])
 
-    cg2 = ConjunctiveGraph()
+    cg2 = Dataset()
     cg2.add([TAREK, LIKES, PIZZA])
     cg2.add([TAREK, LIKES, CHEESE])
 
@@ -83,12 +83,12 @@ def test_operators_with_two_conjunctivegraphs():
     assert len(cg1 ^ cg2) == 2  # removes PIZZA, adds CHEESE
 
 
-def test_operators_with_two_conjunctivegraphs_one_with_contexts():
-    cg1 = ConjunctiveGraph()
+def test_operators_with_two_Datasets_one_with_contexts():
+    cg1 = Dataset()
     cg1.add([TAREK, LIKES, PIZZA])
     cg1.add([TAREK, LIKES, MICHEL])
 
-    cg2 = ConjunctiveGraph()
+    cg2 = Dataset()
     cg2.add([TAREK, LIKES, PIZZA])
     cg2.add([TAREK, LIKES, CHEESE])
     cg2.parse(data=sportquadstrig, format="trig")
@@ -103,9 +103,9 @@ def test_operators_with_two_conjunctivegraphs_one_with_contexts():
 
 
 def test_operators_returning_correct_type():
-    g1 = ConjunctiveGraph()
-    g2 = ConjunctiveGraph()
-    assert type(g1 + g2) is ConjunctiveGraph
-    assert type(g1 - g2) is ConjunctiveGraph
-    assert type(g1 * g2) is ConjunctiveGraph
-    assert type(g1 ^ g2) is ConjunctiveGraph
+    g1 = Dataset()
+    g2 = Dataset()
+    assert type(g1 + g2) is Dataset
+    assert type(g1 - g2) is Dataset
+    assert type(g1 * g2) is Dataset
+    assert type(g1 ^ g2) is Dataset

@@ -8,7 +8,7 @@ from typing import Any, Union
 
 import pytest
 
-from rdflib import ConjunctiveGraph, Dataset, Graph
+from rdflib import Dataset, Dataset, Graph
 from rdflib.term import URIRef
 from test.utils import (
     COLLAPSED_BNODE,
@@ -468,7 +468,7 @@ def test_prefix_tuples(
     ],
 )
 def test_assert_cgraph_isomorphic(
-    graph_type: type[ConjunctiveGraph],
+    graph_type: type[Dataset],
     format: str,
     lhs: str,
     rhs: str,

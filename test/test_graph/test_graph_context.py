@@ -8,7 +8,7 @@ from tempfile import mkdtemp, mkstemp
 
 import pytest
 
-from rdflib import BNode, ConjunctiveGraph, Graph, URIRef, plugin
+from rdflib import BNode, Dataset, Graph, URIRef, plugin
 from rdflib.store import Store
 
 
@@ -19,7 +19,7 @@ class ContextTestCase(unittest.TestCase):
 
     def setUp(self):
         try:
-            self.graph = ConjunctiveGraph(store=self.store)
+            self.graph = Dataset(store=self.store)
         except ImportError:
             pytest.skip("Dependencies for store '%s' not available!" % self.store)
         if self.store == "SQLite":

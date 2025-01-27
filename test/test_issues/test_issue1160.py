@@ -3,7 +3,7 @@ from unittest import mock
 import pytest
 
 import rdflib
-from rdflib import ConjunctiveGraph
+from rdflib import Dataset
 
 QUERY = """
 SELECT DISTINCT ?g
@@ -18,7 +18,7 @@ WHERE {
 
 def test_named_graph_with_fragment():
     """Test that fragment part of the URL is not erased."""
-    graph = ConjunctiveGraph()
+    graph = Dataset()
 
     with mock.patch("rdflib.parser.URLInputSource") as load_mock:
         # We have to expect an exception here.

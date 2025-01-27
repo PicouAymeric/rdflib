@@ -17,7 +17,7 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib.compare
 import rdflib.plugin
-from rdflib import BNode, ConjunctiveGraph, Graph, Dataset
+from rdflib import BNode, Dataset, Graph, Dataset
 from rdflib.plugin import Plugin
 from rdflib.term import IdentifiedNode, Identifier, Literal, Node, URIRef
 
@@ -170,11 +170,11 @@ class GraphHelper:
     @classmethod
     def quad_set(
         cls,
-        graph: ConjunctiveGraph,
+        graph: Dataset,
         bnode_handling: BNodeHandling = BNodeHandling.COMPARE,
     ) -> GHQuadFrozenSet:
         """
-        Extracts the set of all quads from the supplied ConjunctiveGraph.
+        Extracts the set of all quads from the supplied Dataset.
         """
         result: GHQuadSet = set()
         for sn, pn, on, gn in graph.quads((None, None, None, None)):
@@ -182,7 +182,7 @@ class GraphHelper:
             if isinstance(graph, Dataset):
                 assert isinstance(gn, Identifier)
                 gn_id = gn  # type: ignore[unreachable]
-            elif isinstance(graph, ConjunctiveGraph):
+            elif isinstance(graph, Dataset):
                 assert isinstance(gn, Graph)
                 gn_id = gn.identifier
             else:
@@ -204,9 +204,9 @@ class GraphHelper:
     ) -> Union[GHQuadFrozenSet, GHTripleFrozenSet]:
         """
         Extracts quad or triple sets depending on whether or not the graph is
-        ConjunctiveGraph or a normal Graph.
+        Dataset or a normal Graph.
         """
-        if isinstance(graph, ConjunctiveGraph):
+        if isinstance(graph, Dataset):
             return cls.quad_set(graph, bnode_handling)
         return cls.triple_set(graph, bnode_handling)
 
@@ -231,8 +231,8 @@ class GraphHelper:
     @classmethod
     def assert_quad_sets_equals(
         cls,
-        lhs: Union[ConjunctiveGraph, GHQuadSet],
-        rhs: Union[ConjunctiveGraph, GHQuadSet],
+        lhs: Union[Dataset, GHQuadSet],
+        rhs: Union[Dataset, GHQuadSet],
         bnode_handling: BNodeHandling = BNodeHandling.COMPARE,
         negate: bool = False,
     ) -> None:
@@ -248,7 +248,7 @@ class GraphHelper:
 
     @classmethod
     def assert_collection_graphs_equal(
-        cls, lhs: ConjunctiveGraph, rhs: ConjunctiveGraph
+        cls, lhs: Dataset, rhs: Dataset
     ) -> None:
         """
         Assert that all graphs in the provided collections are equal,
@@ -323,7 +323,7 @@ class GraphHelper:
         formatted error message if they are not.
         """
 
-        # TODO FIXME: This should possibly raise an error when used on a ConjunctiveGraph
+        # TODO FIXME: This should possibly raise an error when used on a Dataset
         def format_report(message: str | None = None) -> str:
             in_both, in_lhs, in_rhs = rdflib.compare.graph_diff(lhs, rhs)
             preamle = "" if message is None else f"{message}\n"
@@ -341,12 +341,12 @@ class GraphHelper:
     @classmethod
     def assert_cgraph_isomorphic(
         cls,
-        lhs: ConjunctiveGraph,
-        rhs: ConjunctiveGraph,
+        lhs: Dataset,
+        rhs: Dataset,
         exclude_bnodes: bool,
         message: str | None = None,
     ) -> None:
-        def get_contexts(cgraph: ConjunctiveGraph) -> dict[URIRef, Graph]:
+        def get_contexts(cgraph: Dataset) -> dict[URIRef, Graph]:
             result = {}
             for context in cgraph.contexts():
                 if isinstance(context.identifier, BNode):
@@ -389,14 +389,14 @@ class GraphHelper:
 
     @classmethod
     def non_default_graph_names(
-        cls, container: ConjunctiveGraph
+        cls, container: Dataset
     ) -> set[IdentifiedNode]:
         return set(context.identifier for context in container.contexts()) - {
             container.default_context.identifier
         }
 
     @classmethod
-    def non_default_graphs(cls, container: ConjunctiveGraph) -> Sequence[Graph]:
+    def non_default_graphs(cls, container: Dataset) -> Sequence[Graph]:
         result = []
         for name in cls.non_default_graph_names(container):
             result.append(container.get_context(name))

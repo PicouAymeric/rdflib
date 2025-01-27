@@ -3,7 +3,7 @@ from urllib.request import urlopen
 
 import pytest
 
-from rdflib import BNode, ConjunctiveGraph, Graph, Literal, URIRef
+from rdflib import BNode, Dataset, Graph, Literal, URIRef
 from test.data import BOB, CHEESE, HATES, LIKES, MICHEL, PIZZA, TAREK
 
 HOST = "http://localhost:3031"
@@ -12,7 +12,7 @@ DB = "/db/"
 # this assumes SPARQL1.1 query/update endpoints running locally at
 # http://localhost:3031/db/
 #
-# The ConjunctiveGraph tests below require that the SPARQL endpoint renders its
+# The Dataset tests below require that the SPARQL endpoint renders its
 # default graph as the union of all known graphs! This is incompatible with the
 # endpoint behavior required by our Dataset tests in test_dataset.py, so you
 # need to run a second SPARQL endpoint on a non standard port,
@@ -33,7 +33,7 @@ except Exception:
 @pytest.fixture
 def get_graph():
     longMessage = True  # noqa: F841
-    graph = ConjunctiveGraph("SPARQLUpdateStore")
+    graph = Dataset("SPARQLUpdateStore")
 
     root = HOST + DB
     graph.open((root + "sparql", root + "update"))
@@ -99,7 +99,7 @@ def test_conjunctive_default(get_graph):
     # the following are actually bad tests as they depend on your endpoint,
     # as pointed out in the sparqlstore.py code:
     #
-    # For ConjunctiveGraphs, reading is done from the "default graph" Exactly
+    # For Datasets, reading is done from the "default graph" Exactly
     # what this means depends on your endpoint, because SPARQL does not offer a
     # simple way to query the union of all graphs as it would be expected for a
     # ConjuntiveGraph.

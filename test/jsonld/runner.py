@@ -1,6 +1,6 @@
 import json
 
-from rdflib import BNode, ConjunctiveGraph
+from rdflib import BNode, Dataset
 from rdflib.compare import isomorphic
 from rdflib.parser import InputSource
 from rdflib.plugins.parsers.jsonld import JsonLDParser, to_rdf
@@ -66,7 +66,7 @@ def make_fake_urlinputsource(input_uri, format=None, suite_base=None, options={}
 
 def do_test_json(suite_base, cat, num, inputpath, expectedpath, context, options):
     input_uri = suite_base + inputpath
-    input_graph = ConjunctiveGraph()
+    input_graph = Dataset()
     if cat == "remote-doc":
         input_src = make_fake_urlinputsource(
             input_uri, format="json-ld", suite_base=suite_base, options=options
@@ -122,7 +122,7 @@ def do_test_parser(suite_base, cat, num, inputpath, expectedpath, context, optio
         expected_graph = _load_nquads(expectedpath)
     finally:
         W3CNTriplesParser.nodeid = old_nodeid
-    result_graph = ConjunctiveGraph()
+    result_graph = Dataset()
     requested_version = options.get("specVersion")
     version = DEFAULT_PARSER_VERSION
     if requested_version:
@@ -179,7 +179,7 @@ def do_test_serializer(suite_base, cat, num, inputpath, expectedpath, context, o
 
 def do_test_html(suite_base, cat, num, inputpath, expectedpath, context, options):
     input_uri = suite_base + inputpath
-    input_graph = ConjunctiveGraph()
+    input_graph = Dataset()
 
     input_src = make_fake_urlinputsource(
         input_uri, format="json-ld", suite_base=suite_base, options=options
@@ -205,7 +205,7 @@ def do_test_html(suite_base, cat, num, inputpath, expectedpath, context, options
         expected_graph = _load_nquads(expectedpath)
 
     elif expectedpath.endswith(".jsonld"):
-        expected_graph = ConjunctiveGraph()
+        expected_graph = Dataset()
         with open(expectedpath) as f:
             data = f.read()
         expected_graph.parse(data=data, format="json-ld")
@@ -224,7 +224,7 @@ def do_test_html(suite_base, cat, num, inputpath, expectedpath, context, options
 
 
 def _load_nquads(source):
-    graph = ConjunctiveGraph()
+    graph = Dataset()
     with open(source) as f:
         data = f.read()
     graph.parse(data=data, format="nquads")

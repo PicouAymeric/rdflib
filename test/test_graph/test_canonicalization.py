@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import pytest
 
 import rdflib
-from rdflib import RDF, BNode, ConjunctiveGraph, Graph, Literal, Namespace, URIRef
+from rdflib import RDF, BNode, Dataset, Graph, Literal, Namespace, URIRef
 from rdflib.compare import to_canonical_graph, to_isomorphic
 from rdflib.namespace import FOAF
 from rdflib.plugins.stores.memory import Memory
@@ -273,7 +273,7 @@ def test_issue682_signing_named_graphs():
 
     store = Memory()
 
-    g = ConjunctiveGraph(store=store)
+    g = Dataset(store=store)
     g.bind("love", ns)
 
     gmary = Graph(store=store, identifier=cmary)

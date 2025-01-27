@@ -8,7 +8,6 @@ from typing import Union
 import pytest
 from _pytest.mark.structures import ParameterSet
 
-from rdflib.graph import ConjunctiveGraph
 from rdflib.dataset import DATASET_DEFAULT_GRAPH_ID, Dataset
 from rdflib.term import BNode, URIRef
 from test.data import TEST_DATA_DIR
@@ -16,7 +15,7 @@ from test.data import TEST_DATA_DIR
 
 def make_load_default_and_named() -> Iterable[ParameterSet]:
     for container_type, file_extension in itertools.product(
-        (Dataset, ConjunctiveGraph), ("trig", "nq", "jsonld")
+        (Dataset, Dataset), ("trig", "nq", "jsonld")
     ):
         yield pytest.param(
             container_type,
@@ -40,7 +39,7 @@ EXTENSION_FORMATS = {
     ["container_type", "file_extension"], make_load_default_and_named()
 )
 def test_load_default_and_named(
-    container_type: Union[type[Dataset], type[ConjunctiveGraph]], file_extension: str
+    container_type: Union[type[Dataset], type[Dataset]], file_extension: str
 ) -> None:
     logging.debug("container_type = %s", container_type)
     container = container_type()
@@ -94,7 +93,7 @@ def test_load_default_and_named(
 
 def make_load_default_only_cases() -> Iterable[ParameterSet]:
     for container_type, file_extension in itertools.product(
-        (Dataset, ConjunctiveGraph), ("trig", "ttl", "nq", "nt", "jsonld", "hext", "n3")
+        (Dataset, Dataset), ("trig", "ttl", "nq", "nt", "jsonld", "hext", "n3")
     ):
         yield pytest.param(
             container_type,
@@ -107,7 +106,7 @@ def make_load_default_only_cases() -> Iterable[ParameterSet]:
     ["container_type", "file_extension"], make_load_default_only_cases()
 )
 def test_load_default_only(
-    container_type: Union[type[Dataset], type[ConjunctiveGraph]], file_extension: str
+    container_type: Union[type[Dataset], type[Dataset]], file_extension: str
 ) -> None:
     logging.debug("container_type = %s", container_type)
     container = container_type()

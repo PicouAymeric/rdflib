@@ -1,10 +1,10 @@
 """
-Tests for ConjunctiveGraph that do not depend on the underlying store
+Tests for Dataset that do not depend on the underlying store
 """
 
 import pytest
 
-from rdflib import ConjunctiveGraph, Graph
+from rdflib import Dataset, Graph
 from rdflib.namespace import NamespaceManager
 from rdflib.parser import StringInputSource
 from rdflib.term import BNode, Identifier, URIRef
@@ -17,7 +17,7 @@ PUBLIC_ID = "http://example.org/record/1"
 
 
 def test_bnode_publicid():
-    g = ConjunctiveGraph()
+    g = Dataset()
     b = BNode()
     data = "<d:d> <e:e> <f:f> ."
     print("Parsing %r into %r" % (data, b))
@@ -35,7 +35,7 @@ def test_bnode_publicid():
 
 
 def test_quad_contexts():
-    g = ConjunctiveGraph()
+    g = Dataset()
     a = URIRef("urn:a")
     b = URIRef("urn:b")
     g.get_context(a).add((a, a, a))
@@ -47,7 +47,7 @@ def test_quad_contexts():
 
 
 def test_context_namespaces():
-    cg = ConjunctiveGraph()
+    cg = Dataset()
     a = URIRef("urn:a")
     ns = URIRef("http://example.org/")
     cg.bind("ex", ns)
@@ -59,14 +59,14 @@ def test_context_namespaces():
 
 def test_deprecated():
     with pytest.warns(
-        DeprecationWarning, match="ConjunctiveGraph is deprecated, use Dataset instead."
+        DeprecationWarning, match="Dataset is deprecated, use Dataset instead."
     ):
-        ConjunctiveGraph()
+        Dataset()
 
 
 def get_graph_ids_tests():
     def check(kws):
-        cg = ConjunctiveGraph()
+        cg = Dataset()
         cg.parse(**kws)
 
         for g in cg.contexts():

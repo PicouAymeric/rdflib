@@ -18,7 +18,7 @@ from unittest.mock import patch
 import pytest
 
 import rdflib.namespace
-from rdflib import ConjunctiveGraph, Dataset, Graph
+from rdflib import Dataset, Dataset, Graph
 from rdflib.namespace import Namespace
 from rdflib.plugins.sparql.sparql import Query
 from rdflib.plugins.stores.memory import Memory
@@ -219,7 +219,7 @@ def test_graph_store_bind(
     ("graph_factory", "query_graph"),
     [
         (Graph, lambda graph: graph.identifier),
-        (ConjunctiveGraph, "__UNION__"),
+        (Dataset, "__UNION__"),
         (Dataset, lambda graph: graph.default_context.identifier),
         (lambda store: Dataset(store=store, default_union=True), "__UNION__"),
     ],
@@ -277,7 +277,7 @@ def test_query_query_graph(
     ("graph_factory", "query_graph"),
     [
         (Graph, lambda graph: graph.identifier),
-        (ConjunctiveGraph, "__UNION__"),
+        (Dataset, "__UNION__"),
         (Dataset, lambda graph: graph.default_context.identifier),
         (lambda store: Dataset(store=store, default_union=True), "__UNION__"),
     ],

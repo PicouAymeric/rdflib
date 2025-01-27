@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from rdflib.graph import ConjunctiveGraph
+from rdflib import Dataset
 from rdflib.namespace import RDFS
 from rdflib.plugins.serializers.rdfxml import XMLSerializer
 from rdflib.term import BNode, URIRef
@@ -10,7 +10,7 @@ class SerializerTestBase:
     repeats = 8
 
     def setup_method(self):
-        graph = ConjunctiveGraph()
+        graph = Dataset()
         graph.parse(data=self.test_content, format=self.test_content_format)
         self.source_graph = graph
 
@@ -41,7 +41,7 @@ _blank = BNode()
 
 def _mangled_copy(g):
     "Makes a copy of the graph, replacing all bnodes with the bnode ``_blank``."
-    gcopy = ConjunctiveGraph()
+    gcopy = Dataset()
 
     def isbnode(v):
         return isinstance(v, BNode)
@@ -67,7 +67,7 @@ def serialize(source_graph, make_serializer, get_value=True, extra_args={}):
 def serialize_and_load(source_graph, make_serializer):
     stream = serialize(source_graph, make_serializer, False)
     stream.seek(0)
-    reparsed_graph = ConjunctiveGraph()
+    reparsed_graph = Dataset()
     reparsed_graph.parse(stream, publicID=None, format="xml")
     return reparsed_graph
 

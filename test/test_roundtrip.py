@@ -35,7 +35,7 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib
 import rdflib.compare
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib import Dataset, Graph
 from rdflib.namespace import XSD
 from rdflib.parser import Parser, create_input_source
 from rdflib.plugins.parsers.notation3 import BadSyntax
@@ -235,7 +235,7 @@ def roundtrip(
     infmt: str,
     testfmt: str,
     source: Path,
-    graph_type: type[Graph] = ConjunctiveGraph,
+    graph_type: type[Graph] = Graph,
     checks: set[Check] | None = None,
     same_public_id: bool = False,
 ) -> None:
@@ -264,7 +264,7 @@ def roundtrip(
     else:
         g2.parse(data=g_text, format=testfmt)
 
-    if testfmt == "hext" and isinstance(g2, ConjunctiveGraph):
+    if testfmt == "hext" and isinstance(g2, Dataset):
         # HexTuples always sets Literal("abc") -> Literal("abc", datatype=XSD.string)
         # and this prevents roundtripping since most other formats don't equate "" with
         # ""^^xsd:string, at least not in these tests
@@ -317,7 +317,7 @@ def make_cases(
     formats: set[str] | None = None,
     hext_okay: bool = False,
     checks: set[Check] | None = None,
-    graph_type: type[Graph] = ConjunctiveGraph,
+    graph_type: type[Graph] = Dataset,
     same_public_id: bool = False,
 ) -> Iterable[ParameterSet]:
     if formats is None:

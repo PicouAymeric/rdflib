@@ -15,7 +15,7 @@ from test.data import CONTEXT1, LIKES, PIZZA, TAREK
 # http://localhost:3030/db/
 #
 # Testing SPARQLUpdateStore Dataset behavior needs a different endpoint behavior
-# than our ConjunctiveGraph tests in test_sparqlupdatestore.py!
+# than our Dataset tests in test_sparqlupdatestore.py!
 #
 # For the tests here to run, you can for example start fuseki with:
 # ./fuseki-server --mem --update /db
@@ -295,7 +295,7 @@ def test_graph_without_identifier() -> None:
 def test_not_deprecated():
     """
     Ensure Dataset does not trigger the deprecation warning
-    from the ConjunctiveGraph superclass.
+    from the Dataset superclass.
     """
 
     with warnings.catch_warnings():

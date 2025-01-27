@@ -1,6 +1,6 @@
 import os
 
-from rdflib import ConjunctiveGraph, Namespace, URIRef
+from rdflib import Dataset, Namespace, URIRef
 from test.data import TEST_DATA_DIR
 
 TEST_BASE = os.path.join(TEST_DATA_DIR, "nquads.rdflib")
@@ -8,7 +8,7 @@ TEST_BASE = os.path.join(TEST_DATA_DIR, "nquads.rdflib")
 
 class TestNQuadsParser:
     def _load_example(self):
-        g = ConjunctiveGraph()
+        g = Dataset()
         nq_path = os.path.relpath(
             os.path.join(TEST_DATA_DIR, "nquads.rdflib/example.nquads"), os.curdir
         )
@@ -40,7 +40,7 @@ class TestNQuadsParser:
         assert g.value(s, FOAF.name).eq("Arco Publications")
 
     def test_context_is_optional(self):
-        g = ConjunctiveGraph()
+        g = Dataset()
         nq_path = os.path.relpath(
             os.path.join(TEST_DATA_DIR, "nquads.rdflib/test6.nq"), os.curdir
         )
@@ -49,7 +49,7 @@ class TestNQuadsParser:
         assert len(g) > 0
 
     def test_serialize(self):
-        g = ConjunctiveGraph()
+        g = Dataset()
         uri1 = URIRef("http://example.org/mygraph1")
         uri2 = URIRef("http://example.org/mygraph2")
 
@@ -63,7 +63,7 @@ class TestNQuadsParser:
         s = g.serialize(format="nquads", encoding="utf-8")
         assert len([x for x in s.split(b"\n") if x.strip()]) == 2
 
-        g2 = ConjunctiveGraph()
+        g2 = Dataset()
         g2.parse(data=s, format="nquads")
 
         assert len(g) == len(g2)
@@ -89,8 +89,8 @@ class TestBnodeContext:
 
     def test_parse_shared_bnode_context(self):
         bnode_ctx = dict()
-        g = ConjunctiveGraph()
-        h = ConjunctiveGraph()
+        g = Dataset()
+        h = Dataset()
         g.parse(self.data, format="nquads", bnode_context=bnode_ctx)
         self.data.seek(0)
         h.parse(self.data, format="nquads", bnode_context=bnode_ctx)
@@ -98,7 +98,7 @@ class TestBnodeContext:
 
     def test_parse_shared_bnode_context_same_graph(self):
         bnode_ctx = dict()
-        g = ConjunctiveGraph()
+        g = Dataset()
         g.parse(self.data_obnodes, format="nquads", bnode_context=bnode_ctx)
         o1 = set(g.objects())
         self.data_obnodes.seek(0)
@@ -107,7 +107,7 @@ class TestBnodeContext:
         assert o1 == o2
 
     def test_parse_distinct_bnode_context(self):
-        g = ConjunctiveGraph()
+        g = Dataset()
         g.parse(self.data, format="nquads", bnode_context=dict())
         s1 = set(g.subjects())
         self.data.seek(0)
@@ -116,8 +116,8 @@ class TestBnodeContext:
         assert set() != (s2 - s1)
 
     def test_parse_distinct_bnode_contexts_between_graphs(self):
-        g = ConjunctiveGraph()
-        h = ConjunctiveGraph()
+        g = Dataset()
+        h = Dataset()
         g.parse(self.data, format="nquads")
         s1 = set(g.subjects())
         self.data.seek(0)
@@ -126,8 +126,8 @@ class TestBnodeContext:
         assert s1 != s2
 
     def test_parse_distinct_bnode_contexts_named_graphs(self):
-        g = ConjunctiveGraph()
-        h = ConjunctiveGraph()
+        g = Dataset()
+        h = Dataset()
         g.parse(self.data, format="nquads")
         self.data.seek(0)
         h.parse(self.data, format="nquads")
@@ -135,8 +135,8 @@ class TestBnodeContext:
 
     def test_parse_shared_bnode_contexts_named_graphs(self):
         bnode_ctx = dict()
-        g = ConjunctiveGraph()
-        h = ConjunctiveGraph()
+        g = Dataset()
+        h = Dataset()
         g.parse(self.data, format="nquads", bnode_context=bnode_ctx)
         self.data.seek(0)
         h.parse(self.data, format="nquads", bnode_context=bnode_ctx)

@@ -10,7 +10,7 @@ from pytest import MonkeyPatch
 import rdflib.plugins.sparql
 import rdflib.plugins.sparql.operators
 import rdflib.plugins.sparql.parser
-from rdflib import BNode, ConjunctiveGraph, Graph, Literal, URIRef
+from rdflib import BNode, Dataset, Graph, Literal, URIRef
 from rdflib.compare import isomorphic
 from rdflib.namespace import RDF, RDFS, Namespace
 from rdflib.plugins.sparql import prepareQuery, sparql
@@ -183,7 +183,7 @@ def test_bindings():
 
 
 def test_named_filter_graph_query():
-    g = ConjunctiveGraph()
+    g = Dataset()
     g.namespace_manager.bind("rdf", RDF)
     g.namespace_manager.bind("rdfs", RDFS)
     ex = Namespace("https://ex.com/")

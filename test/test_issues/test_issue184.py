@@ -1,4 +1,4 @@
-from rdflib.graph import ConjunctiveGraph
+from rdflib import Dataset
 from rdflib.term import Literal, URIRef
 
 
@@ -10,9 +10,9 @@ def test_escaping_of_triple_doublequotes():
     quotation marks in the lexical form of the Literal. In this case invalid N3
     is emitted by the serializer, which in turn cannot be parsed correctly.
     """
-    g = ConjunctiveGraph()
+    g = Dataset()
     g.add((URIRef("http://foobar"), URIRef("http://fooprop"), Literal('abc\ndef"""""')))
     # assert g.serialize(format='n3') == '@prefix ns1: <http:// .\n\nns1:foobar ns1:fooprop """abc\ndef\\"\\"\\"\\"\\"""" .\n\n'
-    g2 = ConjunctiveGraph()
+    g2 = Dataset()
     g2.parse(data=g.serialize(format="n3"), format="n3")
     assert g.isomorphic(g2) is True

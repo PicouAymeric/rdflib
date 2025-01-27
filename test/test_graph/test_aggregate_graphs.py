@@ -1,7 +1,8 @@
 from io import StringIO
 
 from rdflib import logger, plugin
-from rdflib.graph import ConjunctiveGraph, Graph, ReadOnlyGraphAggregate
+from rdflib.graph import Graph, ReadOnlyGraphAggregate
+from rdflib.dataset import Dataset
 from rdflib.namespace import RDF, RDFS
 from rdflib.store import Store
 from rdflib.term import URIRef
@@ -108,7 +109,7 @@ def test_aggregate2():
 
     graph4 = Graph(mem_store, RDFS)
     graph4.parse(data=TEST_GRAPH_1N3, format="n3")
-    g = ConjunctiveGraph(mem_store)
+    g = Dataset(mem_store)
     assert g is not None
     assert len(list(g.quads((None, None, None, None)))) == 11
     assert len(list(g.contexts())) == 4

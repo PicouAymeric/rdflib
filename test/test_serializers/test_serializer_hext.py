@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from rdflib import ConjunctiveGraph, Dataset, Graph
+from rdflib import Dataset, Dataset, Graph
 
 
 def test_hext_graph():
@@ -89,8 +89,8 @@ def test_hext_graph():
 
 
 def test_hext_cg():
-    """Tests ConjunctiveGraph data"""
-    d = ConjunctiveGraph()
+    """Tests Dataset data"""
+    d = Dataset()
     trig_data = """
             PREFIX ex: <http://example.com/>
             PREFIX owl: <http://www.w3.org/2002/07/owl#>

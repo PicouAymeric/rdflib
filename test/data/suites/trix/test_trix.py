@@ -7,7 +7,7 @@ from typing import Callable
 
 import pytest
 
-from rdflib import ConjunctiveGraph, logger
+from rdflib import Dataset, logger
 from rdflib.compare import graph_diff, isomorphic
 from rdflib.namespace import split_uri
 from rdflib.term import Node, URIRef
@@ -19,7 +19,7 @@ verbose = False
 
 
 def trix(test: RDFTest):
-    g = ConjunctiveGraph()
+    g = Dataset()
 
     try:
         base = "https://rdflib.github.io/tests/trix/" + split_uri(test.action)[1]
@@ -31,7 +31,7 @@ def trix(test: RDFTest):
 
         if test.result:  # eval test
             logger.debug(f"TEST RESULT {test.result}")
-            res = ConjunctiveGraph()
+            res = Dataset()
             assert not isinstance(test.result, tuple)
             res.parse(test.result, publicID=base)
 

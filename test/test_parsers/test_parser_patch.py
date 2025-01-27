@@ -75,7 +75,7 @@ class TestPatchParser:
             ds.parse(data, format="patch")
         assert len(ds) == 0
 
-    @pytest.mark.xfail(reason="De skolemization is undone by ConjunctiveGraph")
+    @pytest.mark.xfail(reason="De skolemization is undone by Dataset")
     def test_07(self):
         ds = Dataset()
         add_bnode_triple_path = os.path.relpath(

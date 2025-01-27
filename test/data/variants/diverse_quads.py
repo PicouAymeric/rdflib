@@ -1,11 +1,11 @@
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib import Dataset, Graph
 from rdflib.namespace import XSD
 from rdflib.term import Literal
 from test.utils.namespace import EGDC, EGSCHEME, EGURN
 
 
 def populate_graph(graph: Graph) -> None:
-    assert isinstance(graph, ConjunctiveGraph)
+    assert isinstance(graph, Dataset)
 
     graph.add((EGSCHEME.subject, EGSCHEME.predicate, EGSCHEME.object))
     graph.add((EGDC.subject, EGDC.predicate, Literal("typeless")))

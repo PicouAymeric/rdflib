@@ -1,4 +1,4 @@
-from rdflib import ConjunctiveGraph, Dataset, Graph, URIRef
+from rdflib import Dataset, Dataset, Graph, URIRef
 
 data = """
 {
@@ -31,7 +31,7 @@ def test_graph():
 
 
 def test_conjunctive_graph():
-    cg = ConjunctiveGraph()
+    cg = Dataset()
     cg.default_context.parse(data=data, format="application/ld+json")
     assert len(cg) == 3
 

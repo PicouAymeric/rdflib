@@ -23,7 +23,7 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib
 import rdflib.plugin
-from rdflib import RDF, XSD, Graph, Literal, Namespace, URIRef, Dataset, ConjunctiveGraph
+from rdflib import RDF, XSD, Graph, Literal, Namespace, URIRef, Dataset, Dataset
 from rdflib.dataset import DATASET_DEFAULT_GRAPH_ID
 from rdflib.serializer import Serializer
 from test.utils import GraphHelper, get_unique_plugins
@@ -48,12 +48,12 @@ from test.utils.namespace import EGDC, EGSCHEME, EGURN
 )
 def test_rdf_type(format: str, tuple_index: int, is_keyword: bool) -> None:
     NS = Namespace("example:")  # noqa: N806
-    graph = ConjunctiveGraph()
+    graph = Dataset()
     graph.bind("eg", NS)
     nodes = [NS.subj, NS.pred, NS.obj, NS.graph]
     nodes[tuple_index] = RDF.type
     quad = cast(tuple[URIRef, URIRef, URIRef, URIRef], tuple(nodes))
-    # type error: Argument 1 to "add" of "ConjunctiveGraph" has incompatible type "Tuple[URIRef, URIRef, URIRef, URIRef]"; expected "Union[tuple[Node, Node, Node], tuple[Node, Node, Node, Optional[Graph]]]"
+    # type error: Argument 1 to "add" of "Dataset" has incompatible type "Tuple[URIRef, URIRef, URIRef, URIRef]"; expected "Union[tuple[Node, Node, Node], tuple[Node, Node, Node, Optional[Graph]]]"
     graph.add(quad)  # type: ignore[arg-type]
     data = graph.serialize(format=format)
     logging.info("data = %s", data)
@@ -62,7 +62,7 @@ def test_rdf_type(format: str, tuple_index: int, is_keyword: bool) -> None:
         assert str(RDF) not in data
     else:
         assert str(RDF) in data
-    parsed_graph = ConjunctiveGraph()
+    parsed_graph = Dataset()
     parsed_graph.parse(data=data, format=format)
     GraphHelper.assert_triple_sets_equals(graph, parsed_graph)
 

@@ -2,7 +2,7 @@ import textwrap
 
 import pytest
 
-from rdflib.graph import ConjunctiveGraph
+from rdflib import Dataset
 from rdflib.parser import StringInputSource
 
 prefix = textwrap.dedent(
@@ -44,7 +44,7 @@ Betriebsnummer der Einzugsstelle:\nKnappschaft\n980 0000 6\nWICHTIGES DOKUMENT -
 @pytest.mark.xfail(reason="Known issue with newlines in text")
 def test1():
     meta1 = meta.encode("utf-8") % test_string1.encode("utf-8")
-    graph = ConjunctiveGraph()
+    graph = Dataset()
     graph.parse(
         StringInputSource(prefix + "<http://example.org/>" + meta1), format="n3"
     )
@@ -61,7 +61,7 @@ WICHTIGES DOKUMENT - SORGFÄLTIG AUFBEWAHREN!
 @pytest.mark.xfail(reason="Known issue with newlines in text")
 def test2():
     meta2 = meta.encode("utf-8") % test_string2.encode("utf-8")
-    graph = ConjunctiveGraph()
+    graph = Dataset()
     graph.parse(
         StringInputSource(prefix + "<http://example.org/>" + meta2), format="n3"
     )

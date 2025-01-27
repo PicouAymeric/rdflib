@@ -1,4 +1,4 @@
-from rdflib import ConjunctiveGraph, Literal, Namespace
+from rdflib import Dataset, Literal, Namespace
 from rdflib.collection import Collection
 
 target1xml = """\
@@ -48,12 +48,12 @@ def test_collection_render():
     # Works:  x a rdf:List, a foo:Other ;
     # Fails:  y a foo:Wrapper, foo:wraps x; x a rdf:List, a foo:Other ;
 
-    target1 = ConjunctiveGraph()
+    target1 = Dataset()
     target1.parse(data=target1xml, format="xml")
-    target2 = ConjunctiveGraph()
+    target2 = Dataset()
     target2.parse(data=target2xml, format="xml")
 
-    g = ConjunctiveGraph()
+    g = Dataset()
     bits = [ex["a"], ex["b"], ex["c"]]
     l = Collection(g, ex["thing"], bits)  # noqa: E741, F841
     triple = (ex["thing"], rdf["type"], foo["Other"])
