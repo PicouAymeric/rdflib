@@ -183,7 +183,7 @@ def test_bindings():
 
 
 def test_named_filter_graph_query():
-    g = Dataset()
+    g = Dataset(default_union=True)
     g.namespace_manager.bind("rdf", RDF)
     g.namespace_manager.bind("rdfs", RDFS)
     ex = Namespace("https://ex.com/")

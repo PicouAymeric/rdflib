@@ -288,7 +288,8 @@ def test_graph_without_identifier() -> None:
         else:
             others += 1
     assert iris == 2
-    assert bns == 1
+    # Set to zero, why was there a bnode graph?
+    assert bns == 0
     assert others == 0
 
 

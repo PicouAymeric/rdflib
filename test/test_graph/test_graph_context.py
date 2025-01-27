@@ -19,7 +19,7 @@ class ContextTestCase(unittest.TestCase):
 
     def setUp(self):
         try:
-            self.graph = Dataset(store=self.store)
+            self.graph = Dataset(store=self.store, default_union=True)
         except ImportError:
             pytest.skip("Dependencies for store '%s' not available!" % self.store)
         if self.store == "SQLite":
@@ -343,7 +343,7 @@ class ContextTestCase(unittest.TestCase):
             asserte(set(c.subject_predicates(michel)), set([(bob, hates)]))
 
             asserte(
-                set(c),
+                set(c.triples((None,None,None))),
                 set(
                     [
                         (bob, hates, michel),

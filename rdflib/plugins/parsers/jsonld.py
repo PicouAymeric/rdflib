@@ -162,10 +162,10 @@ class JsonLDParser(rdflib.parser.Parser):
         # context_aware. Keeping this check in case RDFLib is changed, or
         # someone passes something context_aware to this parser directly.
         conj_sink: Graph
-        if not sink.context_aware:
+        if not sink.store.context_aware:
             conj_sink = Graph(store=sink.store)
         else:
-            conj_sink = sink
+            conj_sink = Dataset(store=sink.store)
 
         to_rdf(
             data,
