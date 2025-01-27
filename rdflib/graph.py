@@ -283,7 +283,7 @@ class Graph(Node):
         super(Graph, self).__init__()
         self.base = base
         self.__identifier: _ContextIdentifierType
-        self.__identifier = identifier or BNode()  # type: ignore[assignment]
+        self.__identifier = identifier or URIRef("urn:x-rdflib:default")  # type: ignore[assignment]
         if not isinstance(self.__identifier, IdentifiedNode):
             self.__identifier = URIRef(self.__identifier)  # type: ignore[unreachable]
         self.__store: Store
